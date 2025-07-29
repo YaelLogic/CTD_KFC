@@ -65,4 +65,11 @@ class Board:
             ).astype("uint8")
         return frame
 
+    def get_piece_at(self, cell: tuple[int, int]):
+        """Return the piece at the given cell (row, col), or None if empty."""
+        for piece in self.pieces:
+            if piece.current_cell() == cell:
+                return piece
+        return None
+
 
