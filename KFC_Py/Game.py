@@ -15,9 +15,7 @@ from KeyboardInput import KeyboardProcessor, KeyboardProducer
 # set up a module-level logger – real apps can configure handlers/levels
 logger = logging.getLogger(__name__)
 
-
 class InvalidBoard(Exception): ...
-
 
 class Game:
     def __init__(self, pieces: List[Piece], board: Board, score_observer_1=None, score_observer_2=None, display=None):
@@ -39,6 +37,10 @@ class Game:
         # lookup tables ---------------------------------------------------
         self.pos: Dict[Tuple[int, int], List[Piece]] = defaultdict(list)
         self.piece_by_id: Dict[str, Piece] = {p.id: p for p in pieces}
+        self.last_positions: Dict[str, Tuple[int, int]] = {
+            p.id: p.current_cell() for p in pieces
+        }
+        self.active_moves: Dict[str, Tuple[int, int]] = {}
 
         self.selected_id_1: Optional[str] = None
         self.selected_id_2: Optional[str] = None
@@ -102,6 +104,7 @@ class Game:
             for p in self.pieces:
                 p.update(now)
 
+            self._record_moves(now) 
             self._update_cell2piece_map()
 
             while not self.user_input_queue.empty():
@@ -173,21 +176,19 @@ class Game:
         if not mover:
             logger.debug("Unknown piece id %s", cmd.piece_id)
             return
-
-        # שמירת מצב לפני המהלך
-        from_cell = mover.current_cell()
+        
         mover.on_command(cmd, self.pos)
-        # שמירת מצב אחרי המהלך
-        to_cell = mover.current_cell()
-        move_time = self.game_time_ms()
-        print(f"DEBUG: move_time = {move_time}")  # Debugging the time value
-        # קביעת שחקן
-        side = self._side_of(mover.id)
-        if side == 'W':
-            self.move_history_1.add_move(mover.id, from_cell, to_cell, move_time)
-        elif side == 'B':
-            self.move_history_2.add_move(mover.id, from_cell, to_cell, move_time)
 
+        # # שמירת מצב לפני המהלך
+        # from_cell = mover.current_cell()
+        # mover.on_command(cmd, self.pos)
+        # # שמירת מצב אחרי המהלך
+        # to_cell = mover.current_cell()
+        # now_ms = self.game_time_ms()
+
+        # if from_cell != to_cell:
+        #     side = self._side_of(mover.id)
+           
     def _resolve_collisions(self):
         self._update_cell2piece_map()
         occupied = self.pos
@@ -197,7 +198,14 @@ class Game:
                 continue
 
             # Choose the piece that most recently entered the square
-            winner = max(plist, key=lambda p: p.state.physics.get_start_ms())
+            capturers = [p for p in plist if p.state.can_capture()]
+
+            if capturers:                           # לפחות אחד רשאי‑ללכוד
+                winner = max(capturers,
+                            key=lambda p: p.state.physics.get_start_ms())
+            else:                                   # אף אחד לא יכול? המאוחר‑ביותר מנצח
+                winner = max(plist,
+                            key=lambda p: p.state.physics.get_start_ms())
 
             # Determine if captures allowed: default allow
             if not winner.state.can_capture():
@@ -242,3 +250,32 @@ class Game:
     def _announce_win(self):
         text = 'Black wins!' if any(p.id.startswith('KB') for p in self.pieces) else 'White wins!'
         logger.info(text)
+
+    def _record_moves(self, now_ms: int) -> None:
+        """
+        רושם מהלך אחד (מקור→יעד) רק בסיום האנימציה של החייל.
+        """
+        for p in self.pieces:
+            curr = p.current_cell()
+            prev = self.last_positions.get(p.id)
+
+            # --- 1) החייל התחיל לזוז (עזב את התא) --------------------------
+            if (
+                curr != prev and p.id not in self.active_moves 
+                and p.state.physics.is_animating()
+            ):
+                # שומרים מאיפה יצא; עדיין לא רושמים היסטוריה
+                self.active_moves[p.id] = prev
+
+            # --- 2) החייל סיים לנוע: שוב יכול ללכוד -----------------------
+            if p.id in self.active_moves and not p.state.physics.is_animating():
+                from_cell = self.active_moves.pop(p.id)   # מוציא מהמילון
+                to_cell   = curr
+                side      = self._side_of(p.id)
+                if side == 'W':
+                    self.move_history_1.add_move(p.id, from_cell, to_cell, now_ms)
+                else:
+                    self.move_history_2.add_move(p.id, from_cell, to_cell, now_ms)
+
+            # עדכון צילום‑מצב תמידי
+            self.last_positions[p.id] = curr

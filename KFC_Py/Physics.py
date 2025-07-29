@@ -60,6 +60,8 @@ class BasePhysics(ABC):  # Interface/base class
     def is_need_clear_path(self) -> bool:
         return self.do_i_need_clear_path
 
+    def is_animating(self) -> bool:
+            return False
 
 class IdlePhysics(BasePhysics):
 
@@ -71,12 +73,14 @@ class IdlePhysics(BasePhysics):
     def update(self, now_ms: int):
         return None
 
-    def can_capture(self) -> bool:
+    def is_animating(self) -> bool:
         return False
 
     def is_movement_blocker(self) -> bool:
         return True
 
+    def can_capture(self) -> bool:
+        return False   
 
 class MovePhysics(BasePhysics):
 
@@ -115,7 +119,10 @@ class MovePhysics(BasePhysics):
 
     def get_pos_pix(self):
         return super().get_pos_pix()
-
+    def is_animating(self) -> bool:
+        return True
+    
+        return False 
 
 class StaticTemporaryPhysics(BasePhysics):
     def __init__(self, board: Board, param: float = 1.0):
@@ -133,7 +140,6 @@ class StaticTemporaryPhysics(BasePhysics):
             return Command(now_ms, None, "done", [self._end_cell])
 
         return None
-
 
 class JumpPhysics(StaticTemporaryPhysics):
     def reset(self, cmd: Command):
@@ -168,10 +174,11 @@ class JumpPhysics(StaticTemporaryPhysics):
         # period, allowing the state-machine to transition afterwards.
 
     def can_be_captured(self) -> bool:
-        return False
-
+        return False 
 
 class RestPhysics(StaticTemporaryPhysics):
     def can_capture(self) -> bool: return False
-
     def is_movement_blocker(self) -> bool: return True
+    def is_animating(self) -> bool:
+        return True 
+    
