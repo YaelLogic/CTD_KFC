@@ -1,12 +1,12 @@
 import pathlib, queue
 import numpy as np
 
-from Board import Board
-from Command import Command
-from Game import Game, InvalidBoard
-from Piece import Piece
+from core.board import Board
+from core.command import Command
+from core.game import Game, InvalidBoard
+from core.piece import Piece
 from State import State
-from Physics import IdlePhysics, MovePhysics, JumpPhysics
+from core.physics import IdlePhysics, MovePhysics, JumpPhysics
 from Graphics import Graphics
 from GraphicsFactory import MockImgFactory
 from img import Img

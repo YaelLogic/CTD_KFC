@@ -1,6 +1,14 @@
 import threading, logging
-import keyboard  # pip install keyboard
-from Command import Command
+try:
+    import keyboard   # pip install keyboard   – לשימוש ב‑GUI
+except ModuleNotFoundError:
+    # שרת: יוצר גרסה “ריקה” שמספקת רק את מה שהקוד מצפה לו
+    class _DummyKeyboard:
+        def is_pressed(self, *_):  return False
+        def on_press(self, *_):    pass
+        def on_release(self, *_):  pass
+    keyboard = _DummyKeyboard()
+from core.command import Command
 
 logger = logging.getLogger(__name__)
 

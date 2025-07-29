@@ -1,9 +1,9 @@
 import pathlib
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional
-from img import Img
+from .img import Img
 import copy
-from Command import Command
+from core.command import Command
 
 import logging
 

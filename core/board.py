@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from img import Img
+from KFC_Py.img import Img
 
 @dataclass
 class Board:

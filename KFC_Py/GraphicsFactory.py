@@ -1,8 +1,8 @@
 import pathlib
 
-from Graphics import Graphics
-from img import Img
-from mock_img import MockImg
+from .Graphics import Graphics
+from .img import Img
+from .mock_img import MockImg
 
 
 class ImgFactory:

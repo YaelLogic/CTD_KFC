@@ -1,6 +1,6 @@
 # mock_img.py
 import pathlib, cv2
-from img import Img
+from .img import Img
 
 
 class MockImg(Img):

@@ -1,13 +1,13 @@
 from __future__ import annotations
 from ast import List, Tuple
-from Command import Command
-from Moves import Moves
-from Graphics import Graphics
-from Physics import BasePhysics
+from core.command import Command
+from .Moves import Moves
+from .Graphics import Graphics
+from core.physics import BasePhysics
 from typing import Dict, Callable, Optional
 import time, logging
 
-from Piece import Piece
+from core.piece import Piece
 
 logger = logging.getLogger(__name__)
 

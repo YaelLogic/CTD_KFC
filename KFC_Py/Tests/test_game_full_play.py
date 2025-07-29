@@ -1,8 +1,8 @@
 import pathlib, time
 
 from GraphicsFactory import MockImgFactory
-from Game import Game
-from Command import Command
+from core.game import Game
+from core.command import Command
 from GameFactory import create_game
 
 import numpy as np

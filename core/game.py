@@ -6,11 +6,11 @@ from collections import defaultdict
 from core.board import Board
 from core.command import Command
 from core.piece import Piece
-from ScoreObserver import ScoreObserver
-from MoveHistoryObserver import MoveHistoryObserver
+from KFC_Py.ScoreObserver import ScoreObserver
+from KFC_Py.MoveHistoryObserver import MoveHistoryObserver
 
 
-from KeyboardInput import KeyboardProcessor, KeyboardProducer
+from KFC_Py.KeyboardInput import KeyboardProcessor, KeyboardProducer
 
 # set up a module-level logger – real apps can configure handlers/levels
 logger = logging.getLogger(__name__)

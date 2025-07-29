@@ -7,7 +7,7 @@ import pathlib, pytest
 from mock_img import MockImg
 from GraphicsFactory import GraphicsFactory, MockImgFactory
 from GameFactory import create_game
-from Game import Game
+from core.game import Game
 
 # ---------------------------------------------------------------------------
 # Paths

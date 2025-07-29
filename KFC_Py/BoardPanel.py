@@ -5,7 +5,7 @@ from Panel import Panel
 
 if TYPE_CHECKING:
     from GameDisplay import GameDisplay
-    from Board import Board
+    from core.board import Board
 
 class BoardPanel(Panel):
     def __init__(self, display: "GameDisplay", game):

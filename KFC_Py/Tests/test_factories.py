@@ -1,10 +1,9 @@
 import pathlib, numpy as np
-import pytest
-from Board import Board
+from core.board import Board
 from mock_img import MockImg
-from PhysicsFactory import PhysicsFactory
-from Physics import IdlePhysics, MovePhysics, JumpPhysics, RestPhysics
-from PieceFactory import PieceFactory
+from core.physics_factory import PhysicsFactory
+from core.physics import IdlePhysics, MovePhysics, JumpPhysics, RestPhysics
+from core.piece_factory import PieceFactory
 from GraphicsFactory import GraphicsFactory, MockImgFactory
 
 

@@ -6,11 +6,11 @@ from typing import Dict, Tuple
 
 from core.board import Board
 from core.command import Command
-from GraphicsFactory import GraphicsFactory
-from Moves import Moves
+from KFC_Py.GraphicsFactory import GraphicsFactory
+from KFC_Py.Moves import Moves
 from core.physics_factory import PhysicsFactory
 from core.piece import Piece
-from State import State
+from KFC_Py.State import State
 
 
 class PieceFactory:

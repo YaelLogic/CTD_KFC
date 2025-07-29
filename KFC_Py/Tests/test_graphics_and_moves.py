@@ -1,8 +1,8 @@
 import pathlib, tempfile
 from types import SimpleNamespace
 
-from Board import Board
-from Command import Command
+from core.board import Board
+from core.command import Command
 from Graphics import Graphics
 from GraphicsFactory import MockImgFactory
 from Moves import Moves

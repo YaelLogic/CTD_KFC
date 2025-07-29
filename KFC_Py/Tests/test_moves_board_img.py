@@ -1,6 +1,6 @@
 import pathlib, numpy as np
 
-from Board import Board
+from core.board import Board
 from Moves import Moves
 from img import Img
 

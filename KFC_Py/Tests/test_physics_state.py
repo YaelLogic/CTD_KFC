@@ -1,12 +1,12 @@
 import pathlib
 import numpy as np
 
-from Board import Board
-from Command import Command
+from core.board import Board
+from core.command import Command
 from img import Img
-from Physics import IdlePhysics, MovePhysics, JumpPhysics, RestPhysics
+from core.physics import IdlePhysics, MovePhysics, JumpPhysics, RestPhysics
 from State import State
-from Piece import Piece
+from core.piece import Piece
 # Adapt graphics builder to utilise mock image loader
 from Graphics import Graphics
 from GraphicsFactory import MockImgFactory

@@ -1,8 +1,17 @@
 import pathlib
-from Board import Board
-from GameDisplay import GameDisplay
-from PieceFactory import PieceFactory
-from Game import Game
+from core.board import Board
+from core.game import Game
+from core.piece_factory import PieceFactory
+try:
+    from GameDisplay import GameDisplay              # קיים בסביבת GUI
+except ModuleNotFoundError:
+    # אין צורך ב‑GUI בצד השרת, אז יוצרים תחליף ריק
+    class GameDisplay:                               # noqa: N801 – שומר על השם
+        def __init__(self, *_, **__):                # קולט כל פרמטר ומתעלם
+            pass
+
+        def create_canvas(self):
+            return None
 
 CELL_PX = 64
 
@@ -15,7 +24,7 @@ def create_game(pieces_root: str | pathlib.Path, img_factory) -> Game:
     and returns a ready-to-run *Game* instance.
     """
     pieces_root = pathlib.Path(pieces_root)
-    board_csv = pieces_root / "board.csv"
+    board_csv = pieces_root /  "board.csv"
     if not board_csv.exists():
         raise FileNotFoundError(board_csv)
 
@@ -30,7 +39,7 @@ def create_game(pieces_root: str | pathlib.Path, img_factory) -> Game:
 
     board = Board(CELL_PX, CELL_PX, 8, 8, board_img)
 
-    from GraphicsFactory import GraphicsFactory
+    from KFC_Py.GraphicsFactory import GraphicsFactory
     gfx_factory = GraphicsFactory(img_factory)
     pf = PieceFactory(board, pieces_root, graphics_factory=gfx_factory)
 
@@ -42,6 +51,7 @@ def create_game(pieces_root: str | pathlib.Path, img_factory) -> Game:
                     pieces.append(pf.create_piece(code, (r, c)))
 
     game = Game(pieces, board)
+    board.pieces = pieces  # הוספת הכלים כמאפיין של הלוח
 
     display = GameDisplay(           # ⬅️ שולחים את‑game כולו
     game,
@@ -51,4 +61,4 @@ def create_game(pieces_root: str | pathlib.Path, img_factory) -> Game:
 )
     
     game.display = display             # אופציונלי – אם תרצי לגשת מה‑Game
-    return game 
+    return game
