@@ -180,6 +180,7 @@ class Game:
         # שמירת מצב אחרי המהלך
         to_cell = mover.current_cell()
         move_time = self.game_time_ms()
+        print(f"DEBUG: move_time = {move_time}")  # Debugging the time value
         # קביעת שחקן
         side = self._side_of(mover.id)
         if side == 'W':

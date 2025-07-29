@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 from img import Img
 
 @dataclass
@@ -40,4 +42,27 @@ class Board:
         x_px = int(round(x_m / self.cell_W_m * self.cell_W_pix))
         y_px = int(round(y_m / self.cell_H_m * self.cell_H_pix))
         return x_px, y_px
+        # Board.py  – בתוך class Board
+
+    def render(self) -> "np.ndarray":
+        """
+        מחזיר תמונת‑לוח עדכנית (רקע + חיילים חיים).
+        מניח self.img.img = רקע RGBA
+        self.pieces = iterable של Piece עם .sprite rgba ו‑.cell = (row,col)
+        """
+        frame = self.img.img.copy()
+        for p in self.pieces:
+            if getattr(p, "is_captured", False):
+                continue
+            r, c = p.cell
+            y = r * self.cell_H_pix
+            x = c * self.cell_W_pix
+            h, w = p.sprite.shape[:2]
+            alpha = p.sprite[..., 3:] / 255.0
+            roi   = frame[y:y+h, x:x+w, :3]
+            frame[y:y+h, x:x+w, :3] = (
+                roi * (1 - alpha) + p.sprite[..., :3] * alpha
+            ).astype("uint8")
+        return frame
+
 

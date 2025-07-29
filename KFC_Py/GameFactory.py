@@ -1,5 +1,6 @@
 import pathlib
 from Board import Board
+from GameDisplay import GameDisplay
 from PieceFactory import PieceFactory
 from Game import Game
 
@@ -40,4 +41,14 @@ def create_game(pieces_root: str | pathlib.Path, img_factory) -> Game:
                 if code:
                     pieces.append(pf.create_piece(code, (r, c)))
 
-    return Game(pieces, board) 
+    game = Game(pieces, board)
+
+    display = GameDisplay(           # ⬅️ שולחים את‑game כולו
+    game,
+    sidebar_w = 230,
+    margin    = (20,20,20,20),
+    bg_color  = (193,157,122)
+)
+    
+    game.display = display             # אופציונלי – אם תרצי לגשת מה‑Game
+    return game 
